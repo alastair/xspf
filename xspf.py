@@ -2,9 +2,19 @@
 
 import xml.etree.ElementTree as ET
 
-class Xspf(object):
+class XspfBase(object):
+    NS = "http://xspf.org/ns/0/"
+
+    def _addAttributesToXml(self, parent, attrs):
+        for attr in attrs:
+            value = getattr(self, attr)
+            if value:
+                el = ET.SubElement(parent, "{{{0}}}{1}".format(self.NS, attr))
+                el.text = value
+
+
+class Xspf(XspfBase):
     def __init__(self, obj={}, **kwargs):
-        self.NS = "http://xspf.org/ns/0/"
         self.version = "1"
 
         self._title = ""
@@ -112,24 +122,12 @@ class Xspf(object):
         if isinstance(track, Track):
             self._trackList.append(track)
 
-    def _addElementIfNotEmpty(self, parent, name, value):
-        if value:
-    	    el = ET.SubElement(parent, "{{{0}}}{1}".format(self.NS, name))
-            el.text = value            
-
     def toXml(self, encoding="utf-8"):
         root = ET.Element("{{{0}}}playlist".format(self.NS))
         root.set("version", self.version)
-        
-        self._addElementIfNotEmpty(root, "title", self.title)
-        self._addElementIfNotEmpty(root, "info", self.info)
-        self._addElementIfNotEmpty(root, "creator", self.creator)
-        self._addElementIfNotEmpty(root, "annotation", self.annotation)
-        self._addElementIfNotEmpty(root, "location", self.location)
-        self._addElementIfNotEmpty(root, "identifier", self.identifier)
-        self._addElementIfNotEmpty(root, "image", self.image)
-        self._addElementIfNotEmpty(root, "date", self.date)
-        self._addElementIfNotEmpty(root, "license", self.license)
+
+        self._addAttributesToXml(root, ["title", "info", "creator", "annotation",
+                                         "location", "identifier", "image", "date", "license"])
 
         if len(self._trackList):
             track_list = ET.SubElement(root, "{{{0}}}trackList".format(self.NS))
@@ -137,10 +135,8 @@ class Xspf(object):
                 track_list = track.getXmlObject(track_list)
         return ET.tostring(root, encoding)
 
-class Track(object):
+class Track(XspfBase):
     def __init__(self, obj={}, **kwargs):
-        self.NS = "http://xspf.org/ns/0/"
-
         self._location = ""
         self._identifier = ""
         self._title = ""
@@ -153,11 +149,11 @@ class Track(object):
         self._duration = ""
 
         if len(obj):
-            for k, v in obj.items():
+            for k, v in list(obj.items()):
                 setattr(self, k, v)
 
         if len(kwargs):
-            for k, v in kwargs.items():
+            for k, v in list(kwargs.items()):
                 setattr(self, k, v)
 
     @property
@@ -249,23 +245,12 @@ class Track(object):
 
     # Todo: Link, Meta, Extension
 
-    def _addElementIfNotEmpty(self, parent, name, value):
-        if value:
-    	    el = ET.SubElement(parent, "{{{0}}}{1}".format(self.NS, name))
-            el.text = value
-
     def getXmlObject(self, parent):
         track = ET.SubElement(parent, "{{{0}}}track".format(self.NS))
-        self._addElementIfNotEmpty(track, "location", self.location)
-        self._addElementIfNotEmpty(track, "identifier", self.identifier)
-        self._addElementIfNotEmpty(track, "title", self.title)
-        self._addElementIfNotEmpty(track, "creator", self.creator)
-        self._addElementIfNotEmpty(track, "annotation", self.annotation)
-        self._addElementIfNotEmpty(track, "info", self.info)
-        self._addElementIfNotEmpty(track, "image", self.image)
-        self._addElementIfNotEmpty(track, "album", self.album)
-        self._addElementIfNotEmpty(track, "trackNum", self.trackNum)
-        self._addElementIfNotEmpty(track, "duration", self.duration)
+
+        self._addAttributesToXml(track, ["location", "identifier", "title", "creator",
+                                        "annotation", "info", "image", "album",
+                                        "trackNum", "duration"])
         return parent
 
 Spiff = Xspf
