@@ -134,3 +134,28 @@ class TrackTest(unittest.TestCase):
 
         expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:title>my title</ns0:title><ns0:trackList><ns0:track><ns0:title>title</ns0:title><ns0:creator>artist</ns0:creator></ns0:track></ns0:trackList></ns0:playlist>"""
         self.assertEqual(expected, x.toXml())
+
+    def testAddTrackByDict(self):
+        """ Add a track via a dictionary and check the XML """
+        x = xspf.Xspf(title="my title")
+        t = xspf.Track()
+        x.add_track({"title": "title", "creator": "artist"})
+
+        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:title>my title</ns0:title><ns0:trackList><ns0:track><ns0:title>title</ns0:title><ns0:creator>artist</ns0:creator></ns0:track></ns0:trackList></ns0:playlist>"""
+        self.assertEqual(expected, x.toXml())
+
+    def testAddTrackByKwargs(self):
+        """ Add a track via kwargs and check the XML """
+        x = xspf.Xspf(title="my title")
+        x.add_track(title="title", creator="artist")
+
+        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:title>my title</ns0:title><ns0:trackList><ns0:track><ns0:title>title</ns0:title><ns0:creator>artist</ns0:creator></ns0:track></ns0:trackList></ns0:playlist>"""
+        self.assertEqual(expected, x.toXml())
+
+    def testAddTracks(self):
+        """ Add more than 1 track at a time """
+        x = xspf.Xspf(title="my title")
+        t = xspf.Track(title="t", creator="c")
+        u = xspf.Track(title="u", creator="d")
+        x.add_tracks([t, u])
+        self.assertEqual(2, len(x.track))

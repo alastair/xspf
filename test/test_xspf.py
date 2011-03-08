@@ -97,6 +97,14 @@ class XspfTest(unittest.TestCase):
         self.assertEqual("atitle", x.title)
         self.assertEqual("alastair", x.creator)
 
+    def testDictTracks(self):
+        """ Test that tracks from a dict work """
+        x = xspf.Xspf({"title": "atitle", "track": [{"title": "tr1"}, {"title": "tr2"}]})
+        self.assertEqual("atitle", x.title)
+        self.assertEqual(2, len(x.track))
+        self.assertEqual("tr1", x.track[0].title)
+        self.assertEqual("tr2", x.track[1].title)
+
     def testXspfParser(self):
         """ Test that a JSPF-like dict works """
         parse = {"playlist": {"title": "atitle"}}

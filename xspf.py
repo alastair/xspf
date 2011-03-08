@@ -32,11 +32,11 @@ class Xspf(XspfBase):
         if len(obj):
             if "playlist" in obj:
                 obj = obj["playlist"]
-            for k, v in obj.items():
+            for k, v in list(obj.items()):
                 setattr(self, k, v)
 
         if len(kwargs):
-            for k, v in kwargs.items():
+            for k, v in list(kwargs.items()):
                 setattr(self, k, v)
 
     @property
@@ -118,9 +118,25 @@ class Xspf(XspfBase):
 
     # Todo: Attribution, Link, Meta, Extension
 
-    def add_track(self, track):
-        if isinstance(track, Track):
+    @property
+    def track(self):
+        return self._trackList
+    @track.setter
+    def track(self, track):
+        self.add_track(track)
+
+    def add_track(self, track={}, **kwargs):
+        if isinstance(track, list):
+            map(self.add_track, track)
+        elif isinstance(track, Track):
             self._trackList.append(track)
+        elif isinstance(track, dict) and len(track) > 0:
+            self._trackList.append(Track(track))
+        elif len(kwargs) > 0:
+            self._trackList.append(Track(kwargs))
+
+    def add_tracks(self, tracks):
+        map(self.add_track, tracks)
 
     def toXml(self, encoding="utf-8"):
         root = ET.Element("{{{0}}}playlist".format(self.NS))
