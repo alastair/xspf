@@ -38,6 +38,7 @@ Use
     print x.toXml()
 
 If you don't like typing Xspf, we've helpfully aliased 'Spiff' to the same thing:
+
     from xspf import Spiff
     x = Spiff()
     ... etc
@@ -47,6 +48,7 @@ Reading xspf?
 You might want to use [xspfparser](https://github.com/jwheare/xspfparser)
 
 You can load a playlist parsed with xspfparser, modify it, then write it out again.
+
     result = xspfparser.parse(url)
     x = Xspf(result['playlist'])
     # we also support if you forget to deference playlist:
