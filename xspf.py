@@ -12,6 +12,22 @@ class XspfBase(object):
                 el = ET.SubElement(parent, "{{{0}}}{1}".format(self.NS, attr))
                 el.text = value
 
+# in-place prettyprint formatter
+# From http://effbot.org/zone/element-lib.htm
+def indent(elem, level=0):
+    i = "\n" + level*"  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        for elem in elem:
+            indent(elem, level+1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
 
 class Xspf(XspfBase):
     def __init__(self, obj={}, **kwargs):
@@ -138,7 +154,7 @@ class Xspf(XspfBase):
     def add_tracks(self, tracks):
         map(self.add_track, tracks)
 
-    def toXml(self, encoding="utf-8"):
+    def toXml(self, encoding="utf-8", pretty_print=True):
         root = ET.Element("{{{0}}}playlist".format(self.NS))
         root.set("version", self.version)
 
@@ -149,6 +165,8 @@ class Xspf(XspfBase):
             track_list = ET.SubElement(root, "{{{0}}}trackList".format(self.NS))
             for track in self._trackList:
                 track_list = track.getXmlObject(track_list)
+        if pretty_print:
+            indent(root)
         return ET.tostring(root, encoding)
 
 class Track(XspfBase):
