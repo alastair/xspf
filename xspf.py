@@ -12,6 +12,10 @@ class XspfBase(object):
                 el = ET.SubElement(parent, "{{{0}}}{1}".format(self.NS, attr))
                 el.text = value
 
+# Avoid namespace prefixes, VLC doesn't like it
+if hasattr(ET, 'register_namespace'):
+    ET.register_namespace('', XspfBase.NS)
+
 # in-place prettyprint formatter
 # From http://effbot.org/zone/element-lib.htm
 def indent(elem, level=0):
