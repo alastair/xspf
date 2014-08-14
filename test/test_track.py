@@ -11,7 +11,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.location = "location"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:location>location</ns0:location></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><location>location</location></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -20,7 +20,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.identifier = "id"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:identifier>id</ns0:identifier></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><identifier>id</identifier></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -29,7 +29,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.title = "title"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:title>title</ns0:title></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><title>title</title></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -38,7 +38,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.creator = "creator"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:creator>creator</ns0:creator></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><creator>creator</creator></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -47,7 +47,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.annotation = "ann"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:annotation>ann</ns0:annotation></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><annotation>ann</annotation></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -56,7 +56,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.info = "info"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:info>info</ns0:info></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><info>info</info></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -65,7 +65,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.image = "image"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:image>image</ns0:image></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><image>image</image></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -74,7 +74,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.album = "album"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:album>album</ns0:album></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><album>album</album></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -83,7 +83,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.trackNum = "1"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:trackNum>1</ns0:trackNum></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><trackNum>1</trackNum></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -92,7 +92,7 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         t.duration = "1000"
         root = t.getXmlObject(root)
-        expected = """<ns0:x xmlns:ns0="http://xspf.org/ns/0/"><ns0:track><ns0:duration>1000</ns0:duration></ns0:track></ns0:x>"""
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><duration>1000</duration></track></x>"""
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
@@ -132,8 +132,8 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track(title="title", creator="artist")
         x.add_track(t)
 
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:title>my title</ns0:title><ns0:trackList><ns0:track><ns0:title>title</ns0:title><ns0:creator>artist</ns0:creator></ns0:track></ns0:trackList></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><title>my title</title><trackList><track><title>title</title><creator>artist</creator></track></trackList></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testAddTrackByDict(self):
         """ Add a track via a dictionary and check the XML """
@@ -141,16 +141,16 @@ class TrackTest(unittest.TestCase):
         t = xspf.Track()
         x.add_track({"title": "title", "creator": "artist"})
 
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:title>my title</ns0:title><ns0:trackList><ns0:track><ns0:title>title</ns0:title><ns0:creator>artist</ns0:creator></ns0:track></ns0:trackList></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><title>my title</title><trackList><track><title>title</title><creator>artist</creator></track></trackList></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testAddTrackByKwargs(self):
         """ Add a track via kwargs and check the XML """
         x = xspf.Xspf(title="my title")
         x.add_track(title="title", creator="artist")
 
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:title>my title</ns0:title><ns0:trackList><ns0:track><ns0:title>title</ns0:title><ns0:creator>artist</ns0:creator></ns0:track></ns0:trackList></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><title>my title</title><trackList><track><title>title</title><creator>artist</creator></track></trackList></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testAddTracks(self):
         """ Add more than 1 track at a time """

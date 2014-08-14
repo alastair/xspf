@@ -12,62 +12,62 @@ class XspfTest(unittest.TestCase):
 
     def testEmptyPlaylist(self):
         x = xspf.Xspf()
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/" />"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1" />"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testTitle(self):
         x = xspf.Xspf()
         x.title = "title"
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:title>title</ns0:title></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><title>title</title></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testCreator(self):
         x = xspf.Xspf()
         x.creator = "creator"
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:creator>creator</ns0:creator></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><creator>creator</creator></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testAnnotation(self):
         x = xspf.Xspf()
         x.annotation = "ann"
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:annotation>ann</ns0:annotation></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><annotation>ann</annotation></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testInfo(self):
         x = xspf.Xspf()
         x.info = "info"
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:info>info</ns0:info></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><info>info</info></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testLocation(self):
         x = xspf.Xspf()
         x.location = "loc"
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:location>loc</ns0:location></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><location>loc</location></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testIdentifier(self):
         x = xspf.Xspf()
         x.identifier = "id"
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:identifier>id</ns0:identifier></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><identifier>id</identifier></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testImage(self):
         x = xspf.Xspf()
         x.image = "image"
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:image>image</ns0:image></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><image>image</image></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testDate(self):
         x = xspf.Xspf()
         x.date = "date"
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:date>date</ns0:date></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><date>date</date></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testLicense(self):
         x = xspf.Xspf()
         x.license = "CC BY-SA"
-        expected = """<ns0:playlist version="1" xmlns:ns0="http://xspf.org/ns/0/"><ns0:license>CC BY-SA</ns0:license></ns0:playlist>"""
-        self.assertEqual(expected, x.toXml())
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><license>CC BY-SA</license></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
 
     def testKwargs(self):
         """ Test that all attribute names as kwargs works"""
