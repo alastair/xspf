@@ -147,7 +147,8 @@ class Xspf(XspfBase):
 
     def add_track(self, track={}, **kwargs):
         if isinstance(track, list):
-            map(self.add_track, track)
+            for t in track:
+                self.add_track(t)
         elif isinstance(track, Track):
             self._trackList.append(track)
         elif isinstance(track, dict) and len(track) > 0:
@@ -156,7 +157,8 @@ class Xspf(XspfBase):
             self._trackList.append(Track(kwargs))
 
     def add_tracks(self, tracks):
-        map(self.add_track, tracks)
+        for t in tracks:
+            self.add_track(t)
 
     def toXml(self, encoding="utf-8", pretty_print=True):
         root = ET.Element("{{{0}}}playlist".format(self.NS))
