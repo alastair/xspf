@@ -12,6 +12,14 @@ class XspfBase(object):
                 el = ET.SubElement(parent, "{{{0}}}{1}".format(self.NS, attr))
                 el.text = value
 
+    def _addDictionaryElements(self, parent, name, values):
+        # Sort keys so we have a stable order of items for testing.
+        # Alternative would be SortedDict, but is >=2.7
+        for k in sorted(values.keys()):
+            el = ET.SubElement(parent, "{{{0}}}{1}".format(self.NS, name))
+            el.set("rel", k)
+            el.text = values[k]
+
 # Avoid namespace prefixes, VLC doesn't like it
 if hasattr(ET, 'register_namespace'):
     ET.register_namespace('', XspfBase.NS)
@@ -46,6 +54,9 @@ class Xspf(XspfBase):
         self._image = ""
         self._date = ""
         self._license = ""
+        self._attributions = []
+        self._link = {}
+        self._meta = {}
 
         self._trackList = []
 
@@ -136,7 +147,42 @@ class Xspf(XspfBase):
     def license(self, license):
         self._license = license
 
+    @property
+    def meta(self):
+        return self._meta
+
+    def add_meta(self, key, value):
+        """Add a meta element to the playlist."""
+        self._meta[key] = value
+
+    def del_meta(self, key):
+        """Remove a meta element."""
+        del self._meta[key]
+
+    def add_link(self, key, value):
+        """Add a link element to the playlist."""
+        self._link[key] = value
+
+    def del_link(self, key):
+        """Remove a link element."""
+        del self._link[key]
+
+    def add_attribution(self, location, identifier):
+        self.attrbutions.append((location, identifier))
+
+    def truncate_attributions(self, numattributions):
+        self.attrbutions = self.attributions[-numattributions:]
+
     # Todo: Attribution, Link, Meta, Extension
+
+    def add_extension(self, application):
+        pass
+
+    def make_extension_element(self, namespace, name, attributes, value):
+        pass
+
+    def remove_extension(self, application):
+        pass
 
     @property
     def track(self):
@@ -167,6 +213,9 @@ class Xspf(XspfBase):
         self._addAttributesToXml(root, ["title", "info", "creator", "annotation",
                                          "location", "identifier", "image", "date", "license"])
 
+        self._addDictionaryElements(root, "link", self._link)
+        self._addDictionaryElements(root, "meta", self._meta)
+
         if len(self._trackList):
             track_list = ET.SubElement(root, "{{{0}}}trackList".format(self.NS))
             for track in self._trackList:
@@ -187,6 +236,8 @@ class Track(XspfBase):
         self._album = ""
         self._trackNum = ""
         self._duration = ""
+        self._link = {}
+        self._meta = {}
 
         if len(obj):
             for k, v in list(obj.items()):
@@ -283,6 +334,26 @@ class Track(XspfBase):
     def duration(self, duration):
         self._duration = duration
 
+    @property
+    def meta(self):
+        return self._meta
+
+    def add_meta(self, key, value):
+        """Add a meta element to the playlist."""
+        self._meta[key] = value
+
+    def del_meta(self, key):
+        """Remove a meta element."""
+        del self._meta[key]
+
+    def add_link(self, key, value):
+        """Add a link element to the playlist."""
+        self._link[key] = value
+
+    def del_link(self, key):
+        """Remove a link element."""
+        del self._link[key]
+
     # Todo: Link, Meta, Extension
 
     def getXmlObject(self, parent):
@@ -291,6 +362,10 @@ class Track(XspfBase):
         self._addAttributesToXml(track, ["location", "identifier", "title", "creator",
                                         "annotation", "info", "image", "album",
                                         "trackNum", "duration"])
+
+        self._addDictionaryElements(track, "link", self._link)
+        self._addDictionaryElements(track, "meta", self._meta)
+
         return parent
 
 Spiff = Xspf

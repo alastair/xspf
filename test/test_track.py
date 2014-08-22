@@ -96,6 +96,46 @@ class TrackTest(unittest.TestCase):
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
+    def testMeta(self):
+        """ Test that adding a meta tag works """
+
+        root = ET.Element("{http://xspf.org/ns/0/}x")
+        t = xspf.Track()
+        t.add_meta("key", "value")
+
+        res = t.getXmlObject(root)
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><meta rel="key">value</meta></track></x>"""
+        xml = ET.tostring(res, "utf-8")
+        self.assertEqual(expected, xml)
+
+        t.add_meta("secondkey", "secondvalue")
+        root = ET.Element("{http://xspf.org/ns/0/}x")
+        res = t.getXmlObject(root)
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><meta rel="key">value</meta><meta rel="secondkey">secondvalue</meta></track></x>"""
+        xml = ET.tostring(res, "utf-8")
+        self.assertEqual(expected, xml)
+
+        m = t.meta
+        self.assertEqual("value", m["key"])
+        self.assertEqual("secondvalue", m["secondkey"])
+
+        t.del_meta("key")
+        root = ET.Element("{http://xspf.org/ns/0/}x")
+        res = t.getXmlObject(root)
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><meta rel="secondkey">secondvalue</meta></track></x>"""
+        xml = ET.tostring(res, "utf-8")
+        self.assertEqual(expected, xml)
+
+    def testLink(self):
+        root = ET.Element("{http://xspf.org/ns/0/}x")
+        t = xspf.Track()
+        t.add_link("http://somehref/namespace", "http://somepath/here")
+
+        res = t.getXmlObject(root)
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><link rel="http://somehref/namespace">http://somepath/here</link></track></x>"""
+        xml = ET.tostring(res, "utf-8")
+        self.assertEqual(expected, xml)
+
     def testKwargs(self):
         """ Test that all attribute names as kwargs works"""
         t = xspf.Track(location="loc"
@@ -159,3 +199,4 @@ class TrackTest(unittest.TestCase):
         u = xspf.Track(title="u", creator="d")
         x.add_tracks([t, u])
         self.assertEqual(2, len(x.track))
+

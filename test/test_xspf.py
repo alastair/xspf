@@ -111,3 +111,30 @@ class XspfTest(unittest.TestCase):
         x = xspf.Xspf(parse)
         self.assertEqual("atitle", x.title)
 
+    def testMeta(self):
+        """ Test that adding a meta tag works """
+
+        x = xspf.Xspf()
+        x.add_meta("key", "value")
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><meta rel="key">value</meta></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
+
+        x.add_meta("secondkey", "secondvalue")
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><meta rel="key">value</meta><meta rel="secondkey">secondvalue</meta></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
+
+        m = x.meta
+        self.assertEqual("value", m["key"])
+        self.assertEqual("secondvalue", m["secondkey"])
+
+        x.del_meta("key")
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><meta rel="secondkey">secondvalue</meta></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
+
+    def testLink(self):
+        """ Test adding a link tag """
+
+        x = xspf.Xspf()
+        x.add_link("http://somehref/namespace", "http://somepath/here")
+        expected = b"""<playlist xmlns="http://xspf.org/ns/0/" version="1"><link rel="http://somehref/namespace">http://somepath/here</link></playlist>"""
+        self.assertEqual(expected, x.toXml(pretty_print=False))
