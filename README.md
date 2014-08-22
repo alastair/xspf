@@ -16,6 +16,13 @@ Use
     # You can set these attributes:
     # title, creator, annotation, info, location, identifier, image, date, license
 
+    # add a link or meta tag
+    x.add_meta("http://example.org/key", "value")
+    x.add_link("http://foaf.example.org/namespace/version1",
+               "http://socialnetwork.example.org/foaf/mary.rdfs")
+    # and delete them again if you want
+    x.del_meta("http://example.org/key")
+
     # Add attributes at creation:
     y = xspf.Xspf(title="playlist", creator="alastair")
     # Or, with a dictionary
@@ -27,6 +34,8 @@ Use
     tr1.creator = ""
     tr2 = xspf.Track(title="", creator="")
     tr3 = xspf.Track({"title": "", "creator": ""})
+    # Tracks can have meta and link tags too
+    tr1.add_meta("duration", 1000)
     x.add_track(tr1)
     x.add_tracks([tr2, tr3])
 
@@ -56,6 +65,13 @@ You can load a playlist parsed with xspfparser, modify it, then write it out aga
     x.title = "New title"
 
     print x.toXml()
+
+Compatibility
+-------------
+xspf.py is targeted to python 2.7, 3.3, and 3.4. Other versions may work
+but their output is not guaranteed. For example, python 2.6 works but
+all tags are output with a fixed namespace prefix, `ns0:`. This is valid
+XSPF, but some applications don't like it (e.g. VLC).
 
 License
 -------
