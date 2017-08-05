@@ -12,6 +12,11 @@ class XspfBase(object):
                 el = ET.SubElement(parent, "{{{0}}}{1}".format(self.NS, attr))
                 el.text = value
 
+    def _addListElements(self, parent, name, values):
+        for value in values:
+            el = ET.SubElement(parent, "{{{0}}}{1}".format(self.NS, name))
+            el.text = value
+
     def _addDictionaryElements(self, parent, name, values):
         # Sort keys so we have a stable order of items for testing.
         # Alternative would be SortedDict, but is >=2.7
@@ -254,7 +259,12 @@ class Track(XspfBase):
         return self._location
     @location.setter
     def location(self, location):
-        self._location = location
+        # Ensure that the location will internally be a list.
+        # This allows backward-compatibility with invocations that set location as a string.
+        if not isinstance(location, list):
+            self._location = [location]
+        else:
+            self._location = location
 
     @property
     def identifier(self):
@@ -359,9 +369,11 @@ class Track(XspfBase):
     def getXmlObject(self, parent):
         track = ET.SubElement(parent, "{{{0}}}track".format(self.NS))
 
-        self._addAttributesToXml(track, ["location", "identifier", "title", "creator",
+        self._addAttributesToXml(track, ["identifier", "title", "creator",
                                         "annotation", "info", "image", "album",
                                         "trackNum", "duration"])
+
+        self._addListElements(track, "location", self._location)
 
         self._addDictionaryElements(track, "link", self._link)
         self._addDictionaryElements(track, "meta", self._meta)

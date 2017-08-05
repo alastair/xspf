@@ -15,6 +15,15 @@ class TrackTest(unittest.TestCase):
         xml = ET.tostring(root, "utf-8")
         self.assertEqual(expected, xml)
 
+    def testLocations(self):
+        root = ET.Element("{http://xspf.org/ns/0/}x")
+        t = xspf.Track()
+        t.location = ["location1", "location2", "location3"]
+        root = t.getXmlObject(root)
+        expected = b"""<x xmlns="http://xspf.org/ns/0/"><track><location>location1</location><location>location2</location><location>location3</location></track></x>"""
+        xml = ET.tostring(root, "utf-8")
+        self.assertEqual(expected, xml)
+
     def testIdentifier(self):
         root = ET.Element("{http://xspf.org/ns/0/}x")
         t = xspf.Track()
@@ -149,7 +158,7 @@ class TrackTest(unittest.TestCase):
                     , trackNum="1"
                     , duration="1000")
 
-        self.assertEqual("loc", t.location)
+        self.assertEqual(["loc"], t.location)
         self.assertEqual("id", t.identifier)
         self.assertEqual("atitle", t.title)
         self.assertEqual("cre", t.creator)
